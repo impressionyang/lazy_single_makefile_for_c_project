@@ -2,7 +2,7 @@
 # user config values
 CC="/usr/bin/gcc"
 # CC="E:\\impressionyang\\scoop\\apps\\mingw\\12.2.0\\bin\\gcc.exe"
-PROJECT=test
+PROJECT=lazy_make_test
 BUILD_DIR=build
 
 # check operating system type
@@ -65,19 +65,27 @@ INC_DIRS := $(wordlist 1, $(words $(INC_DIRS)), $(INC_DIRS))
 
 # compile job
 all : 
+ifeq ($(OS_TYPE), WINDOWS)
+	mkdir $(BUILD_DIR) 2>nul || ver > nul
+endif
+ifeq ($(OS_TYPE), LINUX)
 	mkdir -p $(BUILD_DIR) 
+endif
+ifeq ($(OS_TYPE), OSX)
+	mkdir -p $(BUILD_DIR) 
+endif
 	$(CC) $(CFLAGS) $(SOURCES) $(HEADERS) $(INC_DIRS) -o $(BUILD_DIR)/$(PROJECT)
 
 # virtual clean job
 .PHONY : clean
 clean:
 ifeq ($(OS_TYPE), WINDOWS)
-	del $(BUILD_DIR)/$(PROJECT).exe
+	rmdir /S /Q $(BUILD_DIR)
 endif
 ifeq ($(OS_TYPE), LINUX)
-	rm $(BUILD_DIR)/$(PROJECT)
+	rm -rf ./$(BUILD_DIR)
 endif
 ifeq ($(OS_TYPE), OSX)
-	rm $(BUILD_DIR)/$(PROJECT)
+	rm -rf ./$(BUILD_DIR)
 endif
 	
